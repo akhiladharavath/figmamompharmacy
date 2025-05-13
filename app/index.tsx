@@ -1,15 +1,14 @@
-import { Text, View } from "react-native";
+import { View } from 'react-native';
+import GetStart from './Login/getstart';
+import { userAuth } from '@/context/authContext';
 
-export default function Index() {
+
+const Index = () => {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+    <View style={{ flex: 1 }}>
+      <GetStart />
     </View>
   );
-}
+};
+
+export default Index;
