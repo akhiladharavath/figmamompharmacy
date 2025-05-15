@@ -17,8 +17,10 @@ export default async function Index() {
     </View>
   }
 
-  if(isLoggedIn && token){
-    router.replace("/BottomNavbar/home")
+  if(isLoggedIn && token && userDetails){
+    console.log(userDetails.isRegistered)
+    if(!userDetails.isRegistered) router.replace("/Login/signup")
+    else router.replace("/BottomNavbar/home")
   }else{
     router.replace("/Login/Login")
   }

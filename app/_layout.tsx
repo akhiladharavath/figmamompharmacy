@@ -1,3 +1,4 @@
+import { AddressProvider } from "@/Context/addressContext";
 import { AuthProvider } from "@/Context/authContext";
 import { CartProvider } from "@/Context/cartContext";
 import { LocationProvider } from "@/Context/locationContext";
@@ -10,11 +11,13 @@ export default function RootLayout() {
     <LocationProvider>
       <PaperProvider>
       <AuthProvider>
+        <AddressProvider>
       <CartProvider>
     <Stack screenOptions={{headerShown:false}}>
       <Stack.Screen name="index"  />
     </Stack>
     </CartProvider>
+    </AddressProvider>
     </AuthProvider>
     </PaperProvider>
     </LocationProvider>

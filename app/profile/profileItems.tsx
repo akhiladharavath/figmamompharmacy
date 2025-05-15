@@ -1,5 +1,6 @@
 // app/profile/ProfileItem.jsx
 import { Link } from 'expo-router';
+import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 function ProfileItem({ title, icon, link }) {

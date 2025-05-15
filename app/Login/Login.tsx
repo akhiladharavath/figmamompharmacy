@@ -33,7 +33,7 @@ export default function LoginScreen() {
   const flatListRef = useRef<FlatList>(null);
   const router = useRouter();
 
-  const {loginWithOtp} = userAuth()
+  const { loginWithOtp , ExtractParseToken } = userAuth()
 
   const taglineText = (
     <>
@@ -42,6 +42,7 @@ export default function LoginScreen() {
   );
 
   const handleSendOtp = async () => {
+
     if (!/^\d{10}$/.test(input)) {
       Alert.alert('Invalid Phone Number', 'Please enter a valid 10-digit phone number.');
       return;
@@ -57,30 +58,6 @@ export default function LoginScreen() {
     await loginWithOtp(input)
     setLoading(false)
 
-    // try {
-    //   const payload = { mobileNo: input }; 
-    //   console.log('Sending JSON:', JSON.stringify(payload));
-
-    //   const response = await fetch('https://mom-beta-server1.onrender.com/api/user/login', {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(payload),
-    //   });
-
-    //   const data = await response.json();
-
-    //   if (response.ok) {
-    //     router.push('/Login/otp');
-    //   } else {
-    //     Alert.alert('Error', data.message || 'Failed to send OTP.');
-    //   }
-    // } catch (error) {
-    //   Alert.alert('Error', 'Network error. Please try again.');
-    // } finally {
-    //   setLoading(false);
-    // }
   };
 
   const handleInputChange = (text: string) => {

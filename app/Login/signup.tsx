@@ -1,11 +1,11 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { BlurView } from 'expo-blur';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
+
+import { Picker } from '@react-native-picker/picker';
 import {
   Alert,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
   Modal,
@@ -16,7 +16,7 @@ import {
   TextInput,
   TouchableOpacity,
   TouchableWithoutFeedback,
-  View,
+  View
 } from 'react-native';
 import { Button, Checkbox } from 'react-native-paper';
 
@@ -24,69 +24,61 @@ import { userAuth } from '../../Context/authContext';
 import WelcomeCard from './success';
 
 const SignUpScreen = () => {
-  const { postData, loginWithOtp } = userAuth();
+  const { ExtractParseToken , getUserDetails } = userAuth();
 
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [dob, setDob] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
+  const [gender , setGender] = useState()
 
-  const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
-  const validatePhone = (phone: string) => /^[0-9]{10}$/.test(phone);
+  // const validateEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
+  // const validatePhone = (phone: string) => /^[0-9]{10}$/.test(phone);
+
+ 
+
+
+
+  async function signupUser(){
+    const AuthToken = await ExtractParseToken();
+
+    try{
+      const options = {
+        method:"PUT", 
+        headers:{
+          "Authorization":`Bearer ${AuthToken}` , 
+          "Content-Type":"application/json"
+        },
+        body:JSON.stringify({
+          name:`${firstName} ${lastName}` , 
+          dateOfBirth:dob , 
+          gender,
+        })
+      }
+      const response = await fetch("https://mom-beta-server1.onrender.com/api/user/register" , options)
+      console.log(response)
+      if(response.ok){
+        console.log("this is running")
+        await getUserDetails()
+        router.replace("/Login/success")
+      }else{
+        router.replace("/BottomNavbar/home")
+      }
+    }catch(e){
+      console.log("Error in signing up" , e)
+    }
+  }
 
   const handleSignUp = async () => {
     if (!firstName.trim()) return Alert.alert('Validation Error', 'First name is required');
     if (!lastName.trim()) return Alert.alert('Validation Error', 'Last name is required');
     if (!dob.trim()) return Alert.alert('Validation Error', 'Date of birth is required');
-    if (!email.trim()) return Alert.alert('Validation Error', 'Email is required');
-    if (!validateEmail(email)) return Alert.alert('Validation Error', 'Enter a valid email address');
-    if (!phone.trim()) return Alert.alert('Validation Error', 'Phone number is required');
-    if (!validatePhone(phone)) return Alert.alert('Validation Error', 'Enter a valid 10-digit phone number');
-
-    try {
-      console.log('Starting signup process for phone:', phone);
-      
-      // First, send OTP
-      const loginResult = await loginWithOtp(phone);
-      console.log('Login/OTP result:', loginResult);
-      
-      if (!loginResult.success) {
-        console.error('Failed to send OTP:', loginResult.message);
-        return; // Alert is shown by loginWithOtp
-      }
-
-      // Store the registration details temporarily
-      const registrationData = {
-        firstName,
-        lastName,
-        dob,
-        email,
-        gender: 'not_specified'
-      };
-      console.log('Storing registration data:', registrationData);
-      
-      await AsyncStorage.setItem('pendingRegistration', JSON.stringify(registrationData));
-
-      // Navigate to OTP screen with registration flag
-      console.log('Navigating to OTP screen for registration');
-      router.push({
-        pathname: '/Login/otp',
-        params: { 
-          phone, 
-          isRegistration: 'true',
-          registrationData: JSON.stringify(registrationData) // Pass registration data in params
-        }
-      });
-    } catch (error) {
-      console.error("Error during sign-up:", error);
-      Alert.alert(
-        "Registration Error", 
-        "Something went wrong during signup. Please try again."
-      );
+    if(isChecked){
+      signupUser()
+    }else{
+      Alert.alert("Please accept the terms and conditions")
     }
   };
 
@@ -113,11 +105,7 @@ const SignUpScreen = () => {
           <ScrollView contentContainerStyle={styles.outerContainer} keyboardShouldPersistTaps="handled">
             <View style={styles.headerRow}>
               <Text style={styles.header}>Sign Up</Text>
-              <TouchableOpacity onPress={() => router.push('./medintro')}>
-                <View style={styles.skipbox}>
-                  <Text style={styles.skipText}>skip</Text>
-                </View>
-              </TouchableOpacity>
+             
             </View>
 
             <Text style={styles.label}>First Name</Text>
@@ -160,25 +148,24 @@ const SignUpScreen = () => {
               />
             )}
 
-            <Text style={styles.label}>Email</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your email"
-              placeholderTextColor="#888"
-              value={email}
-              onChangeText={setEmail}
-              keyboardType="email-address"
-            />
+            
 
-            <Text style={styles.label}>Phone number</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your phone number"
-              placeholderTextColor="#888"
-              keyboardType="phone-pad"
-              value={phone}
-              onChangeText={setPhone}
-            />
+          <Text style={styles.label}>Gender</Text>
+            <View style={styles.pickerWrapper}>
+              <Picker
+                selectedValue={gender}
+                onValueChange={(itemValue) => {
+                  setGender(itemValue);
+                }}
+                style={{ color: gender ? '#000' : '#888' }}
+              >
+                <Picker.Item label="Select Gender" value="" />
+                <Picker.Item label="Male" value="male" />
+                <Picker.Item label="Female" value="female" />
+                <Picker.Item label="Non-binary" value="non-binary" />
+                <Picker.Item label="Prefer not to answer" value="prefer-not" />
+              </Picker>
+            </View>
 
             <Button 
               mode="contained" 
@@ -210,15 +197,8 @@ const SignUpScreen = () => {
               </Text>
             </View>
 
-            <View style={styles.socialContainer}>
-              <Image source={require('../../assets/images/google.png')} style={styles.socialIcon} />
-              <Image source={require('../../assets/images/fb.png')} style={styles.fbIcon} />
-              <Image source={require('../../assets/images/x.png')} style={styles.twit} />
-            </View>
 
-            <TouchableOpacity onPress={() => router.push('./Login')}>
-              <Text style={styles.loginLink}>Already have an account? Login</Text>
-            </TouchableOpacity>
+
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
@@ -275,6 +255,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 24,
   },
+  pickerWrapper: {
+    backgroundColor: '#e9f0eb',
+    borderRadius: 25,
+    marginBottom: 4,
+  },
+
   header: {
     fontSize: 28,
     fontWeight: '700',

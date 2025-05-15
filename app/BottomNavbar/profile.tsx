@@ -3,7 +3,7 @@ import { COLOR } from '@/constants/color';
 import { userAuth } from '@/Context/authContext';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Alert, FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import ProfileCompletionCard from '../profile/Percentage';
 
@@ -57,35 +57,13 @@ const profileSections = [
 
 export default function ProfileScreen() {
   const [user, setUser] = useState({ name: '', email: '', mobileNo: '' });
-  const {ExtractParseToken} = userAuth()
-  const fetchUserDetails = async () => {
-    try {
-      const tokenAuth = await ExtractParseToken() ;
+  const {ExtractParseToken , logout , userDetails} = userAuth()
+  console.log("this is ",userDetails)
+  
+  
 
-      const response = await fetch('https://mom-beta-server.onrender.com/api/user/user-details', {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${tokenAuth}`,
-        },
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      setUser(data.userDetails); // assuming API returns { userDetails: { name, email, ... } }
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchUserDetails();
-  }, []);
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await logout()
     Alert.alert('Logged Out', 'You have been logged out successfully.');
   };
 
@@ -110,8 +88,8 @@ export default function ProfileScreen() {
         <View style={styles.profileContainer}>
           <Image style={styles.avatar} source={require('../../assets/images/profileimg.png')} />
           <View style={styles.profileDetails}>
-            <Text style={styles.name}>{user.name || 'Loading...'}</Text>
-            <Text style={styles.email}>{user.email || ''}</Text>
+            <Text style={styles.name}>{userDetails.name || 'Loading...'}</Text>
+            <Text style={styles.email}>{userDetails.mobileNo || ''}</Text>
           </View>
         </View>
 
@@ -122,7 +100,7 @@ export default function ProfileScreen() {
         data={profileSections}
         keyExtractor={(item) => item.title}
         renderItem={({ item }) => (
-          <TouchableOpacity onPress={() => router.push(item.link)} style={styles.profileBox}>
+          <TouchableOpacity onPress={() => router.push(`${item.link}`)} style={styles.profileBox}>
             <View style={styles.row}>
               {item.icon}
               <Text style={styles.sectionTitle}>{item.title}</Text>

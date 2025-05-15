@@ -1,4 +1,5 @@
-import { JWT_TOKEN } from '@env';
+import { screen } from '@/constants/color';
+import { userAuth } from '@/Context/authContext';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -9,7 +10,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 
 type Product = {
@@ -27,12 +28,14 @@ export default function SavedListScreen() {
   const [loading, setLoading] = useState(true);
   const userId = 'YOUR_USER_ID';
 
+  const {ExtractParseToken} = userAuth() 
+
   useEffect(() => {
 
     const fetchWishlist = async () => {
       try {
         // Get JWT token from AsyncStorage
-        const token = JWT_TOKEN;
+        const token = await ExtractParseToken();
         console.log(token)
     
         if (!token) {
@@ -181,6 +184,7 @@ const styles = StyleSheet.create({
     padding: 16,
     paddingBottom: 40,
     backgroundColor: '#fff',
+    minHeight:screen.height
   },
   headerRow: {
     flexDirection: 'row',

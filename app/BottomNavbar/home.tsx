@@ -4,12 +4,15 @@ import Carousel from '@/components/Home/carousel'
 import Footer from '@/components/Home/footer'
 import TopNavbar from '@/components/Home/topNavbar'
 import UploadPrescription from '@/components/Home/uploadPrescription'
+import { userAuth } from '@/Context/authContext'
 import React from 'react'
 import { ScrollView, StyleSheet, View } from 'react-native'
 
 
 
 const Home = () => {
+  const {userDetails} = userAuth()
+  console.log(userDetails)
   return (
     <View style={styles.screen}>
       <TopNavbar /> 
