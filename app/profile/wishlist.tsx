@@ -1,6 +1,6 @@
 import { userAuth } from '@/Context/authContext';
 import { useCart } from '@/Context/cartContext';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -183,8 +183,8 @@ const handleDecrement = (item: Product) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.headerRow}>
-        <Ionicons
-          name="chevron-back-outline"
+        <MaterialIcons
+          name="arrow-back"
           size={24}
           color="#00A99D"
           onPress={() => router.back()}

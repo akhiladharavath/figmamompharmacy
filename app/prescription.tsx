@@ -1,5 +1,7 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
+import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
@@ -13,7 +15,7 @@ import {
   View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import Icon from 'react-native-vector-icons/Ionicons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const PrescriptionUploadScreen = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -102,88 +104,97 @@ const PrescriptionUploadScreen = () => {
 
   return (
     <SafeAreaView>
-    <ScrollView contentContainerStyle={styles.container}>
-      <Text style={styles.title}>Upload Prescription</Text>
+      <ScrollView contentContainerStyle={styles.container}>
+        
+        <View style={styles.headerRow}>
+          <TouchableOpacity
+            style={styles.headerBackButton}
+            onPress={() => router.back()}
+          >
+            <MaterialIcons name="arrow-back" size={30} color="#00a99d" />
+          </TouchableOpacity>
+          <Text style={styles.title}>Upload Prescription</Text>
+        </View>
 
-      <View style={styles.row}>
-        <TouchableOpacity style={styles.optionButtonHalf} onPress={handleCaptureCamera}>
+        <View style={styles.row}>
+          <TouchableOpacity style={styles.optionButtonHalf} onPress={handleCaptureCamera}>
+            <View style={styles.optionLeft}>
+              <Ionicons name="camera-outline" size={24} color="#008080" />
+              <Text style={styles.optionText}>Camera</Text>
+            </View>
+            <Ionicons name="chevron-forward-outline" size={24} color="#008080" />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.optionButtonHalf} onPress={handleSelectGallery}>
+            <View style={styles.optionLeft}>
+              <Ionicons name="images-outline" size={24} color="#008080" />
+              <Text style={styles.optionText}>Gallery</Text>
+            </View>
+            <Ionicons name="chevron-forward-outline" size={24} color="#008080" />
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity style={styles.optionButtonFull} onPress={handleUploadPDF}>
           <View style={styles.optionLeft}>
-            <Icon name="camera-outline" size={24} color="#008080" />
-            <Text style={styles.optionText}>Camera</Text>
+            <Ionicons name="folder-outline" size={24} color="#008080" />
+            <Text style={styles.optionText}>Upload PDF</Text>
           </View>
-          <Icon name="chevron-forward-outline" size={24} color="#008080" />
+          <Ionicons name="chevron-forward-outline" size={24} color="#008080" />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.optionButtonHalf} onPress={handleSelectGallery}>
+        <TouchableOpacity style={styles.optionButtonFull} onPress={handleChoosePrevious}>
           <View style={styles.optionLeft}>
-            <Icon name="images-outline" size={24} color="#008080" />
-            <Text style={styles.optionText}>Gallery</Text>
+            <Ionicons name="document-text-outline" size={24} color="#008080" />
+            <Text style={styles.optionText}>Previous Uploads</Text>
           </View>
-          <Icon name="chevron-forward-outline" size={24} color="#008080" />
+          <Ionicons name="chevron-forward-outline" size={24} color="#008080" />
         </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity style={styles.optionButtonFull} onPress={handleUploadPDF}>
-        <View style={styles.optionLeft}>
-          <Icon name="folder-outline" size={24} color="#008080" />
-          <Text style={styles.optionText}>Upload PDF</Text>
-        </View>
-        <Icon name="chevron-forward-outline" size={24} color="#008080" />
-      </TouchableOpacity>
+        <TextInput
+          placeholder="Enter your name"
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+        />
 
-      <TouchableOpacity style={styles.optionButtonFull} onPress={handleChoosePrevious}>
-        <View style={styles.optionLeft}>
-          <Icon name="document-text-outline" size={24} color="#008080" />
-          <Text style={styles.optionText}>Previous Uploads</Text>
-        </View>
-        <Icon name="chevron-forward-outline" size={24} color="#008080" />
-      </TouchableOpacity>
+        <TextInput
+          placeholder="Enter your age"
+          style={styles.input}
+          value={age}
+          onChangeText={setAge}
+          keyboardType="numeric"
+        />
 
-      <TextInput
-        placeholder="Enter your name"
-        style={styles.input}
-        value={name}
-        onChangeText={setName}
-      />
+        <TextInput
+          placeholder="Additional notes (optional)"
+          style={styles.input}
+          value={notes}
+          onChangeText={setNotes}
+          multiline
+        />
 
-      <TextInput
-        placeholder="Enter your age"
-        style={styles.input}
-        value={age}
-        onChangeText={setAge}
-        keyboardType="numeric"
-      />
+        <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
+          <Text style={styles.uploadButtonText}>Upload</Text>
+        </TouchableOpacity>
 
-      <TextInput
-        placeholder="Additional notes (optional)"
-        style={styles.input}
-        value={notes}
-        onChangeText={setNotes}
-        multiline
-      />
-
-      <TouchableOpacity style={styles.uploadButton} onPress={handleUpload}>
-        <Text style={styles.uploadButtonText}>Upload</Text>
-      </TouchableOpacity>
-
-      {/* Modal */}
-      <Modal visible={modalVisible} transparent animationType="slide">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Confirm Submission</Text>
-            <Text>Send details to WhatsApp?</Text>
-            <View style={styles.modalActions}>
-              <TouchableOpacity onPress={() => setModalVisible(false)}>
-                <Text style={styles.modalCancel}>Cancel</Text>
-              </TouchableOpacity>
-              <TouchableOpacity onPress={handleSendToWhatsApp}>
-                <Text style={styles.modalOk}>OK</Text>
-              </TouchableOpacity>
+        {/* Modal */}
+        <Modal visible={modalVisible} transparent animationType="slide">
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>Confirm Submission</Text>
+              <Text>Send details to WhatsApp?</Text>
+              <View style={styles.modalActions}>
+                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                  <Text style={styles.modalCancel}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleSendToWhatsApp}>
+                  <Text style={styles.modalOk}>OK</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-      </Modal>
-    </ScrollView>
+        </Modal>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -194,6 +205,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#007E710D',
     flexGrow: 1,
   },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    marginTop: 10,
+  },
+  headerBackButton: {
+    marginRight: 8,
+    padding: 4,
+  },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -202,9 +223,8 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 20,
     color: '#333',
-    textAlign: 'center',
+    textAlign: 'center'
   },
   optionButtonHalf: {
     flexDirection: 'row',
@@ -290,6 +310,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
+  // Removed old backButton style!
 });
 
 export default PrescriptionUploadScreen;

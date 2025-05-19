@@ -1,5 +1,5 @@
 import { useAddress } from '@/Context/addressContext';
-import { Entypo, Ionicons } from '@expo/vector-icons';
+import { Entypo, Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -7,6 +7,7 @@ import {
   Dimensions,
   Linking,
   Modal,
+  SafeAreaView,
   ScrollView,
   Share,
   StyleSheet,
@@ -103,9 +104,11 @@ export default function AddressBook() {
   };
 
   return (
+    
     <ScrollView style={styles.container} contentContainerStyle={{ paddingBottom: hp('10%') }}>
+      <SafeAreaView>
       <View style={styles.header}>
-        <Ionicons name="arrow-back" size={hp('3%')} color="#00695c" />
+        <MaterialIcons name="arrow-back" size={hp('3%')} color="#00695c" onPress={()=> router.back()} />
         <Text style={styles.headerText}>Address Book</Text>
       </View>
 
@@ -201,7 +204,10 @@ export default function AddressBook() {
           </View>
         </View>
       </Modal>
+      </SafeAreaView>
     </ScrollView>
+    
+    
   );
 }
 

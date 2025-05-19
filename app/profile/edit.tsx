@@ -1,6 +1,6 @@
 import { COLOR } from '@/constants/color';
 import { userAuth } from '@/Context/authContext';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
@@ -77,7 +77,7 @@ const EditUserScreen = () => {
       
       <View style={styles.statusContainer}>
       <Pressable style={styles.Container1} onPress={()=>router.back()}>
-      <AntDesign name="left" size={24} color={COLOR.secondary} />
+      <MaterialIcons name="arrow-back" size={24} color={COLOR.secondary} />
       <Text style={styles.Text}>Edit User Details</Text>
       </Pressable>
     </View>

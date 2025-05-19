@@ -1,6 +1,6 @@
 import { COLOR } from '@/constants/color';
 import { userAuth } from '@/Context/authContext';
-import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import { FlatList, Image, Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -67,7 +67,7 @@ export default function ProfileScreen() {
         <View style={styles.header}>
           <View style={styles.headerRow}>
             <TouchableOpacity onPress={() => {router.back()}}>
-              <Ionicons name="chevron-back-outline" size={32} color="#1A7563" />
+              <MaterialIcons name="arrow-back" size={28} color={COLOR.primary} />
             </TouchableOpacity>
             <Text style={styles.headerTitle}>Account & Settings</Text>
           </View>

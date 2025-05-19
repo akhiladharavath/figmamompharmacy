@@ -18,7 +18,10 @@ const Categories = () => {
     <SafeAreaView style={styles.screen}>
       <GlobalStatusBar />
 
-      <TopNavbar />
+      <TopNavbar 
+      showBack={true}
+      onBack={()=> {router.back()}}
+      />
       <Search />
       <ScrollView  
         style={styles.scrollView}

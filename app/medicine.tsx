@@ -1,5 +1,5 @@
-import Search from '@/components/Home/search';
 import { useCart } from '@/Context/cartContext';
+import { COLOR } from '@/constants/color';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
@@ -7,19 +7,22 @@ import {
   Image,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from 'react-native-responsive-screen';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Icon from 'react-native-vector-icons/Feather';
 
 export default function Medicines({ limit }) {
   const [sortType, setSortType] = useState('low');
   const [showDropdown, setShowDropdown] = useState(false);
   const [medicine, setMedicine] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const { subcategoryId } = useLocalSearchParams();
   const {
     addToCart,
@@ -35,19 +38,26 @@ export default function Medicines({ limit }) {
   };
 
   useEffect(() => {
-    fetch(
-      `https://mom-beta-server1.onrender.com/api/medicines/subcategories/${subcategoryId}/medicines`
-    )
-      .then((res) => res.json())
-      .then((data) => {
+    const fetchMedicinesSub = async () => {
+      try {
+        const res = await fetch(
+          `https://mom-beta-server1.onrender.com/api/medicines/subcategories/${subcategoryId}/medicines`
+        );
+        const data = await res.json();
         setMedicine(data);
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error('Failed to fetch medicines:', err);
-      });
+      }
+    };
+
+    fetchMedicinesSub();
   }, []);
 
-  const sortedMedicines = [...medicine].sort((a, b) =>
+  const filteredMedicines = medicine.filter((item) =>
+    (item.medicine_name ?? '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  const sortedMedicines = [...filteredMedicines].sort((a, b) =>
     sortType === 'low' ? a.price - b.price : b.price - a.price
   );
 
@@ -56,8 +66,21 @@ export default function Medicines({ limit }) {
 
   return (
     <SafeAreaView style={styles.container}>
-     
-      <Search />
+      <View style={styles.searchRow}>
+        <TouchableOpacity
+          style={styles.searchBackButton}
+          onPress={() => router.back()}
+        >
+          <Icon name="chevron-left" size={28} color="#00a99d" />
+        </TouchableOpacity>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search medicines"
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+          placeholderTextColor="#888"
+        />
+      </View>
 
       <View style={styles.header}>
         <Text style={styles.title} allowFontScaling={false}>
@@ -122,7 +145,7 @@ export default function Medicines({ limit }) {
                   store: item.store,
                   expiryDate: item.expiryDate,
                   manufactureDate: item.manufactureDate,
-                  subcategories: JSON.stringify(item.subcategories || [])
+                  subcategories: JSON.stringify(item.subcategories || []),
                 },
               })
             }
@@ -210,6 +233,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  // --- NEW SEARCH BAR STYLES ---
+  searchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: COLOR.light,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: COLOR.primary,
+    paddingHorizontal: 10,
+    margin: 20,
+    height: 56,
+  },
+  searchBackButton: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 8,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    borderRadius: 10,
+    backgroundColor: 'transparent',
+    color: '#000',
+    fontSize: 16,
+    paddingHorizontal: 10,
   },
   header: {
     paddingHorizontal: wp('4%'),
@@ -301,13 +350,13 @@ const styles = StyleSheet.create({
     color: '#4CAF50',
   },
   medicineBtn: {
-  backgroundColor: '#00a99d',
-  height: 36, 
-  borderRadius: 16,
-  alignItems: 'center',
-  flexDirection: 'row',
-  justifyContent: 'space-evenly',
-  paddingHorizontal: 10,
+    backgroundColor: '#00a99d',
+    height: 36,
+    borderRadius: 16,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    paddingHorizontal: 10,
   },
   btnText: {
     color: '#fff',
@@ -322,6 +371,6 @@ const styles = StyleSheet.create({
   },
   quantityIcon: {
     paddingHorizontal: 10,
-    
   },
 });
+

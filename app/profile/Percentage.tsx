@@ -1,4 +1,4 @@
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -17,7 +17,7 @@ const ProfileCompletionCard: React.FC = () => {
     <SafeAreaView>
     <View  style={styles.container}>
     <View style={styles.progressSection}>
-        <Ionicons name="chevron-back-outline" size={32} color="#1A7563" />
+        <MaterialIcons name="arrow-back" size={32} color="#1A7563" />
         <View style={styles.textContainer}>
           <Text style={styles.percentageText}>80% Profile completed</Text>
           <Text style={styles.subText}>Complete and earn 100 HC</Text>

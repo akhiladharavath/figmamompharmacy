@@ -3,19 +3,19 @@ import { useCart } from '@/Context/cartContext';
 import { router, useLocalSearchParams } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import {
-    FlatList,
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  FlatList,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function Medicines({ limit }) {
   const [sortType, setSortType] = useState('low');
-const [showDropdown, setShowDropdown] = useState(false);
-// 'low' or 'high'
+  const [showDropdown, setShowDropdown] = useState(false);
+  // 'low' or 'high'
   const [medicine, setMedicine] = useState([]);
   const { subcategoryId } = useLocalSearchParams();
   const { addToCart, cartItems, incrementItem, decrementItem, removeFromCart } = useCart();
@@ -47,61 +47,64 @@ const [showDropdown, setShowDropdown] = useState(false);
 
   return (
     <View style={styles.container}>
-      <TopNavbar />
+      <TopNavbar
+        showBack={true}
+      onBack={() => router.back()}
+      />
 
       <View style={styles.header}>
         <Text style={styles.title}>Popular Medicines</Text>
       </View>
 
-     <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 15, marginBottom: 10 }}>
-  <View>
-    <TouchableOpacity 
-      onPress={() => setShowDropdown(!showDropdown)} 
-      style={{
-        backgroundColor: '#00a99d',
-        paddingHorizontal: 12,
-        paddingVertical: 8,
-        borderRadius: 8,
-      }}
-    >
-      <Text style={{ color: 'white', fontWeight: 'bold' }}>
-        Sort: {sortType === 'low' ? 'Low to High' : 'High to Low'}
-      </Text>
-    </TouchableOpacity>
+      <View style={{ flexDirection: 'row', justifyContent: 'flex-end', paddingHorizontal: 15, marginBottom: 10 }}>
+        <View>
+          <TouchableOpacity
+            onPress={() => setShowDropdown(!showDropdown)}
+            style={{
+              backgroundColor: '#00a99d',
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+              borderRadius: 8,
+            }}
+          >
+            <Text style={{ color: 'white', fontWeight: 'bold' }}>
+              Sort: {sortType === 'low' ? 'Low to High' : 'High to Low'}
+            </Text>
+          </TouchableOpacity>
 
-    {showDropdown && (
-      <View style={{
-        backgroundColor: '#e0f7fa',
-        borderRadius: 8,
-        marginTop: 5,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.3,
-        shadowRadius: 2,
-      }}>
-        <TouchableOpacity
-          style={{ padding: 8 }}
-          onPress={() => {
-            setSortType('low');
-            setShowDropdown(false);
-          }}
-        >
-          <Text>Low to High</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={{ padding: 8 }}
-          onPress={() => {
-            setSortType('high');
-            setShowDropdown(false);
-          }}
-        >
-          <Text>High to Low</Text>
-        </TouchableOpacity>
+          {showDropdown && (
+            <View style={{
+              backgroundColor: '#e0f7fa',
+              borderRadius: 8,
+              marginTop: 5,
+              elevation: 3,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 1 },
+              shadowOpacity: 0.3,
+              shadowRadius: 2,
+            }}>
+              <TouchableOpacity
+                style={{ padding: 8 }}
+                onPress={() => {
+                  setSortType('low');
+                  setShowDropdown(false);
+                }}
+              >
+                <Text>Low to High</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ padding: 8 }}
+                onPress={() => {
+                  setSortType('high');
+                  setShowDropdown(false);
+                }}
+              >
+                <Text>High to Low</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
       </View>
-    )}
-  </View>
-</View>
 
 
       <FlatList

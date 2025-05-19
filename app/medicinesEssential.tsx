@@ -44,8 +44,8 @@ export default function Medicines() {
 
   return (
     <SafeAreaView>
-      
-       <TopNavbar />
+
+       <TopNavbar showBack={true} onBack={()=> router.back()}/>
     <ScrollView >
     <View style={styles.container}>
      
